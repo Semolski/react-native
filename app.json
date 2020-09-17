@@ -1,6 +1,5 @@
 {
   "expo": {
-	"entryPoint": "App.js"
     "name": "confusion",
     "slug": "confusion",
     "version": "1.0.0",
