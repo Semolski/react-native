@@ -19,37 +19,39 @@ const mapDispatchToProps = dispatch => ({
     postComment: (dishId, author, rating, comment) => dispatch(postComment(dishId, rating, author, comment))
 });
 
-function RenderDish({
-    dish,
-    favorite,
-    markFavorite,
-    openCommentForm
-}) {
+function RenderDish(props) {
+    const dish = props.dish
+
     if (dish != null) {
         return(
-            <Card
-                featuredTitle={dish.name}
-                image={{uri: baseUrl + dish.image}}>
-                <Text style={{margin: 10}}>
-                    {dish.description}
-                </Text>
-                <Icon
-                    raised
-                    reverse
-                    name={props.favorite ? 'heart' : 'heart-o'}
-                    type='font-awesome'
-                    color='#f50'
-                    onPress={() => props.favorite ? console.log('Already favorite') : props.onPress()}
-                    />
-                <Icon
-                    raised
-                    reverse
-                    name={'pencil'}
-                    type='font-awesome'
-                    color='#512DA8'
-                    onPress={() => openCommentForm}
-                />
-            </Card>
+            <Animatable.View animation="fadeInDown" duration={2000} delay={1000}>
+                <Card
+                    featuredTitle={dish.name}
+                    image={{uri: baseUrl + dish.image}}>
+                    <Text style={{margin: 10}}>
+                        {dish.description}
+                    </Text>
+                    <View style={styles.cardRow}>
+                        <Icon
+                            raised
+                            reverse
+                            name={props.favorite ? 'heart' : 'heart-o'}
+                            type='font-awesome'
+                            color='#f50'
+                            onPress={() => props.favorite ? console.log('Already favorite') : props.onPress()}
+                        />
+                        <Icon
+                            raised
+                            reverse
+                            name={'pencil'}
+                            type='font-awesome'
+                            color='#512DA8'
+                            style={styles.cardItem}
+                            onPress={() => openCommentForm}
+                        />
+                    </View>
+                </Card>
+            </Animatable.View>
         );
     }
     else {
@@ -57,10 +59,10 @@ function RenderDish({
     }
 }
 
-function RenderComments({comments}){
+function RenderComments(props){
+    const comments = props.comments;
 
     const renderCommentItem = ({item, index}) => {
-
         return(
           <View key={index} style={{margin:10}}>
               <Text style={{fontSize: 14}}>{item.comment}</Text>
@@ -72,13 +74,15 @@ function RenderComments({comments}){
 
     if (comments != null) {
         return(
-            <Card title="Comments">
-                <FlatList
-                    data={comments}
-                    renderItem={renderCommentItem}
-                    keyExtractor={item => item.id.toString()}
-                />
-            </Card>
+            <Animatable.View animation="fadeInUp" duration={2000} delay={1000}>
+                <Card title="Comments">
+                    <FlatList
+                        data={comments}
+                        renderItem={renderCommentItem}
+                        keyExtractor={item => item.id.toString()}
+                    />
+                </Card>
+            </Animatable.View>
         );
     }
     else {
