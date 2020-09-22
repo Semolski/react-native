@@ -1,4 +1,4 @@
-import * as ActionTypes from './ActionTypes'
+import * as ActionTypes from './ActionTypes';
 
 export const promotions = (state = {
     isLoading: true,
@@ -13,7 +13,7 @@ export const promotions = (state = {
             return {...state, isLoading: true, errMess: null, promotions: []}
 
         case ActionTypes.PROMOS_FAILED:
-            return {...state, isLoading: false, errMess: action.payload, promotions: [] }
+            return {...state, isLoading: false, errMess: action.payload };
 
         default:
             return state;

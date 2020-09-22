@@ -219,7 +219,7 @@ const MainNavigator = createDrawerNavigator({
 },
     {
         drawerBackgroundColor: '#D1C4E9',
-        contentComponent: CustomDrawerContenComponent
+        contentComponent: CustomDrawerContentComponent
 });
 
 class Main extends Component {

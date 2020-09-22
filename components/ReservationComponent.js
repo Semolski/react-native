@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Text, View, ScrollView, StyleSheet, Picker, Switch, Button, Modal} from 'react-native;'
+import {Text, View, ScrollView, StyleSheet, Picker, Switch, Button, Modal} from 'react-native';
 import { Card } from 'react-native-elements';
 import DatePicker from "react-native-datepicker";
 
@@ -7,17 +7,25 @@ class Reservation extends Component {
 
     constructor(props) {
         super(props);
-        this.state = {
+        this.state = this.defaultState();
+    }
+
+    defaultState() {
+        return({
             guests: 1,
             smoking: false,
             date: '',
-            showModal: false
-        }
+            showModal: false,
+        })
     }
 
     static navigationOptions = {
         title: 'Reserve Table'
     }
+
+    resetForm() {
+        this.setState(this.defaultState());
+    };
 
     toggleModal() {
         this.setState({ showModal: !this.state.showModal})
@@ -28,15 +36,9 @@ class Reservation extends Component {
         this.toggleModal();
     }
 
-    resetForm() {
-        this.setState({
-            guests: 1,
-            smoking: false,
-            date: ''
-        });
-    }
 
     render() {
+        let todayDate = new Date().toISOString().split('T')[0];
         return(
           <ScrollView>
               <View style={styles.formRow}>
@@ -101,8 +103,8 @@ class Reservation extends Component {
                   animationType={'slide'}
                   transparent={false}
                   visible={this.state.showModal}
-                  onDismiss={() => {this.toggleModal(); this.resetForm()}}
-                  onRequestClose={() => {this.toggleModal(); this.resetForm()}}
+                  onDismiss={() => {this.resetForm()}}
+                  onRequestClose={() => {this.resetForm()}}
                 >
                   <View style={styles.modal}>
                       <Text style={styles.modalTitle}>Your Reservation</Text>
@@ -110,7 +112,7 @@ class Reservation extends Component {
                       <Text style={styles.modalText}>Smoking? : {this.state.smoking ? 'Yes' : 'No'}</Text>
                       <Text style={styles.modalText}>Date and Time: {this.state.date}</Text>
                       <Button
-                          onPress={() => {this.toggleModal(); this.resetForm()}}
+                          onPress={() => {this.resetForm()}}
                           color='#512DA8'
                           title='Close'
                               />

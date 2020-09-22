@@ -1,5 +1,5 @@
-import * as ActionTypes from './ActionTypes'
-import {baseUrl} from "../shared/baseUrl";
+import * as ActionTypes from './ActionTypes';
+import { baseUrl } from "../shared/baseUrl";
 
 export const fetchComments = () => (dispatch) => {
     return fetch(baseUrl + 'comments')
@@ -35,7 +35,7 @@ export const addComments = (comments) => ({
 export const fetchDishes = () => (dispatch) => {
     dispatch(dishesLoading());
 
-    return fetch(baseUrl + 'comments')
+    return fetch(baseUrl + 'dishes')
         .then(response => {
                 if (response.ok) {
                     return response;
@@ -156,3 +156,23 @@ export const addFavorite = (dishId) => ({
     type: ActionTypes.ADD_FAVORITE,
     payload: dishId
 });
+
+export const addComment = (comment) => ({
+    type: ActionTypes.ADD_COMMENT,
+    payload: comment
+});
+
+export const postComment = (dishId, rating, author, comment) => (dispatch) => {
+
+    const newComment = {
+        author: author,
+        comment: comment,
+        dishId: dishId,
+        rating: rating,
+    };
+    newComment.date = new Date().toISOString();
+
+    setTimeout(() => {
+        dispatch(addComment(newComment));
+    }, 2000);
+};
