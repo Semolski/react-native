@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {Text, View, ScrollView, StyleSheet, Picker, Switch, Button, Modal} from 'react-native';
 import { Card } from 'react-native-elements';
 import DatePicker from "react-native-datepicker";
+import {Permissions, Notifications} from "expo/build/removed.web";
 
 class Reservation extends Component {
 
@@ -34,7 +35,56 @@ class Reservation extends Component {
     handleReservation() {
         console.log(JSON.stringify(this.state));
         this.toggleModal();
+        let message = 'Number of Guests: ' + this.state.guests
+            '\nSmoking? ' + this.state.smoking
+                '\nDate and Time ' + this.state.date
+
+        Alert.alert(
+            'Your Reservation OK?',
+            message,
+            [
+                {text: 'Cancel', onPress: () => {
+                        console.log('Reservation Cancelled');
+                        this.resetForm();
+                    }, style: 'cancel'
+                }, {text: 'OK', onPress: () => {
+                    this.presentLocalNotification(this.state.date);
+                    this.resetForm();
+                }
+              }
+            ],
+            { cancelable: false }
+        );
+
     }
+
+    async obtainNotificationPermission() {
+        let permission = await Permissions.getAysnc(Permissions.USER_FACING_NOTIFICATIONS)
+        if (permission.status !== 'granted'){
+            permission = await Permissions.askAsync(Permissions.USER_FACING_NOTIFICATIONS)
+            if (permission.status !== 'granted') {
+                Alert.alert('Permission not granted to show notification')
+            }
+        }
+        return permission;
+    }
+
+    async presentLocalNotification(date) {
+        await this.obtainNotificationPermission()
+        Notifications.presentLocalNotificationAsync({
+            title: 'Your Reservation',
+            body: 'Reservation for' + date + 'requested',
+            ios: {
+                sound: true
+            },
+            android: {
+                sound: true,
+                vibrate: true,
+                color: '#512DA8'
+            }
+        })
+    }
+
 
 
     render() {
