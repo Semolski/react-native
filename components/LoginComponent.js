@@ -141,7 +141,7 @@ class RegisterTab extends Component {
             });
 
             if (!capturedImage.cancelled) {
-                this.setState({imageUrl: capturedImage.uri})
+                this.processImage(capuredImage.uri)
             }
         }
     }
