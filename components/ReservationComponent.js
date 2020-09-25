@@ -4,6 +4,7 @@ import { Card } from 'react-native-elements';
 import DatePicker from "react-native-datepicker";
 import {Permissions, Notifications} from "expo/build/removed.web";
 import * as Animatable from 'react-native-animatable';
+import * as Calendar from 'expo-calender';
 
 class Reservation extends Component {
 
@@ -57,6 +58,7 @@ class Reservation extends Component {
                 {
                     text: 'OK', onPress: () => {
                     this.presentLocalNotification(this.state.date);
+                    this.addReservationToCalendar(this.state.date);
                     this.resetForm();
                 },
               }
@@ -66,12 +68,50 @@ class Reservation extends Component {
 
     }
 
+    async obtainCalenderPermission() {
+        let permission = await Permissions.getAysnc(Permissions.CALENDAR)
+        if (permission.status !== 'granted') {
+            permission = await Permissions.askAsync(Permissions.CALENDAR)
+            if (permission.status !== 'granted') {
+                Alert.alert('Permission not granted to use calendar')
+            }
+        }
+        return permission;
+    }
+
+    async getCalendarId() {
+        const calendars = await Calendar.getCalendarAsync();
+        const defaultCalendars = calendars.filter(each => each.source.name === 'Default');
+        return defaultCalendars[0].id;
+    }
+
+    async addReservationToCalendar(date) {
+        await this.obtainCalenderPermission();
+
+        console.log("Date: " + date);
+
+        const calendar = await Calendar.getCalendarAsync();
+        console.log({ calendar });
+
+        const defaultCalendarId = await this.getCalendarId();
+
+        console.log("Calendar Id: " + defaultCalendarId);
+
+        Calendar.createEventAsync(defaultCalendarId, {
+            title: 'Con Fusion Table Reservation',
+            startDate: new Date(Date.parse(date)),
+            endDate: new Date(Date.parse(date) + (2*60*60*1000)),
+            timeZone: 'Asia/Hong_Kong',
+            location: '121, Clear Water Bay Road, Clear Water Bay, Kowloon, Hong Kong'
+        });
+    }
+
     async obtainNotificationPermission() {
         let permission = await Permissions.getAysnc(Permissions.USER_FACING_NOTIFICATIONS)
         if (permission.status !== 'granted'){
             permission = await Permissions.askAsync(Permissions.USER_FACING_NOTIFICATIONS)
             if (permission.status !== 'granted') {
-                Alert.alert('Permission not granted to show notification')
+                Alert.alert('Permission not granted to show the notification')
             }
         }
         return permission;
