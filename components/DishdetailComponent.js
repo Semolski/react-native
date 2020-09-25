@@ -1,9 +1,9 @@
 import React, { Component, useRef } from 'react';
-import { View, Text, ScrollView, FlatList, StyleSheet, Modal, Button, Alert, PanResponder, Share } from 'react-native';
+import { View, Text, ScrollView, SafeAreaView, FlatList, StyleSheet, Modal, Button, Alert, PanResponder, Share } from 'react-native';
 import {Card,Icon, Input, Rating} from "react-native-elements";
 import {connect} from "react-redux";
 import {baseUrl} from "../shared/baseUrl";
-import {postFavorite, postComment} from "../redux/ActionCreators";
+import {postFavorite, postComment, addComment} from "../redux/ActionCreators";
 import * as Animatable from 'react-native-animatable';
 
 const mapStateToProps = state => {
@@ -25,11 +25,12 @@ function RenderDish(props) {
     const viewRef = useRef(null);
 
     const recognizeDrag = ({moveX, moveY, dy, dx}) => {
-        if (dx < -200)
-            return true;
-        else
-            return false;
+        return dx < -200;
     };
+
+    const recognizeDragComment = ({dx}) => {
+        return dx > 200;
+    }
 
     const panResponder = PanResponder.create({
         onStartShouldSetPanResponder: (e, gestureState) => {
@@ -57,6 +58,10 @@ function RenderDish(props) {
                     ],
                     { cancelable: false }
                     )
+                if (recognizeDragComment(gestureState)) {
+                    props.onSelect()
+                }
+
                 return true;
             }
         });
